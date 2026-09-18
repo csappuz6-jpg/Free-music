@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#00e5ff">
+
+<title>FREE MUSIC</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding-bottom:245px;
+  background:#07070b;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+header{
+  padding:24px 20px 12px;
+  font-size:30px;
+  font-weight:800;
+}
+
+header span{color:#00e5ff}
+
+.sub{
+  color:#777;
+  font-size:13px;
+  margin:-5px 20px 18px;
+}
+
+.add{
+  display:block;
+  margin:0 20px 15px;
+  padding:16px;
+  border-radius:16px;
+  background:#00e5ff;
+  color:#000;
+  text-align:center;
+  font-weight:bold;
+}
+
+input[type=file]{display:none}
+
+.search{
+  margin:0 20px 14px;
+}
+
+.search input{
+  width:100%;
+  padding:14px 18px;
+  border:1px solid #252530;
+  border-radius:25px;
+  background:#15151c;
+  color:white;
+  outline:none;
+  font-size:15px;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  margin:0 20px 16px;
+}
+
+.tabs button{
+  flex:1;
+  padding:11px;
+  border:0;
+  border-radius:20px;
+  background:#181820;
+  color:#aaa;
+  font-weight:bold;
+}
+
+.tabs button.active{
+  background:#00e5ff;
+  color:#000;
+}
+
+#songs{min-height:100px}
+
+.song{
+  margin:9px 20px;
+  padding:12px;
+  background:#15151c;
+  border:1px solid #20202a;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.song.playing{
+  border-color:#00e5ff;
+}
+
+.cover{
+  width:55px;
+  height:55px;
+  min-width:55px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#00e5ff,#7c4dff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+}
+
+.info{
+  flex:1;
+  min-width:0;
+}
+
+.info b{
+  display:block;
+  margin-bottom:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.info small{color:#777}
+
+button{
+  font-family:Arial,sans-serif;
+  cursor:pointer;
+}
+
+.play{
+  width:40px;
+  height:40px;
+  min-width:40px;
+  border:0;
+  border-radius:50%;
+  background:#00e5ff;
+  font-size:16px;
+}
+
+.fav,.delete{
+  border:0;
+  background:none;
+  font-size:21px;
+}
+
+.fav{color:#666}
+.fav.active{color:#ff4081}
+.delete{color:#777}
+
+.empty{
+  text-align:center;
+  color:#666;
+  margin-top:55px;
+  padding:20px;
+}
+
+/* PLAYER */
+
+.player{
+  position:fixed;
+  z-index:10;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:14px 18px 13px;
+  background:rgba(18,18,25,.98);
+  border-top:1px solid #292933;
+  box-shadow:0 -10px 30px rgba(0,0,0,.35);
+}
+
+.playerTop{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+
+.playerCover{
+  width:55px;
+  height:55px;
+  min-width:55px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#00e5ff,#7c4dff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+}
+
+.playerInfo{
+  flex:1;
+  min-width:0;
+}
+
+.playerInfo b{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.playerInfo small{
+  color:#777;
+}
+
+#favoriteMain{
+  border:0;
+  background:none;
+  color:#666;
+  font-size:25px;
+}
+
+#favoriteMain.active{color:#ff4081}
+
+.progressRow{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.progressRow span{
+  width:34px;
+  color:#888;
+  font-size:10px;
+}
+
+input[type=range]{
+  flex:1;
+  accent-color:#00e5ff;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:5px 0;
+}
+
+.controls button{
+  width:40px;
+  height:40px;
+  margin:0 5px;
+  border:0;
+  border-radius:50%;
+  background:#292933;
+  color:white;
+  font-size:16px;
+}
+
+.controls #mainPlay{
+  width:47px;
+  height:47px;
+  background:#00e5ff;
+  color:#000;
+  font-size:18px;
+}
+
+.mode.active{
+  color:#00e5ff;
+}
+
+.volume{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.volume span{font-size:14px}
+
+.toast{
+  position:fixed;
+  z-index:30;
+  bottom:255px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#22222b;
+  color:white;
+  padding:10px 16px;
+  border-radius:20px;
+  display:none;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  FREE <span>MUSIC</span> 🎵
+</header>
+
+<div class="sub">
+  Your music. Your player.
+</div>
+
+<label class="add">
+  ＋ ADD MUSIC FROM PHONE
+  <input id="fileInput" type="file" accept="audio/*" multiple>
+</label>
+
+<div class="search">
+  <input id="search" type="text" placeholder="🔎 Search music...">
+</div>
+
+<div class="tabs">
+  <button id="allBtn" class="active" onclick="showAll()">ALL</button>
+  <button id="favBtn" onclick="showFavorites()">❤️ FAVORITES</button>
+</div>
+
+<div id="songs">
+  <div class="empty">No music added yet 🎵</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- PLAYER -->
+
+<div class="player">
+
+  <div class="playerTop">
+
+    <div class="playerCover" id="playerCover">
+      🎵
+    </div>
+
+    <div class="playerInfo">
+      <b id="now">No song selected</b>
+      <small id="status">FREE MUSIC</small>
+    </div>
+
+    <button id="favoriteMain" onclick="toggleFavorite()">♡</button>
+
+  </div>
+
+  <div class="progressRow">
+
+    <span id="currentTime">0:00</span>
+
+    <input
+      type="range"
+      id="progress"
+      min="0"
+      max="100"
+      value="0"
+    >
+
+    <span id="duration">0:00</span>
+
+  </div>
+
+  <div class="controls">
+
+    <button class="mode" id="shuffleBtn" onclick="toggleShuffle()">🔀</button>
+
+    <button onclick="previous()">⏮</button>
+
+    <button id="mainPlay" onclick="togglePlay()">▶</button>
+
+    <button onclick="next()">⏭</button>
+
+    <button class="mode" id="repeatBtn" onclick="toggleRepeat()">🔁</button>
+
+  </div>
+
+  <div class="volume">
+
+    <span>🔊</span>
+
+    <input
+      type="range"
+      id="volume"
+      min="0"
+      max="1"
+      step="0.01"
+      value="1"
+    >
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   BASIC VARIABLES
+========================= */
+
+let songs=[];
+let current=-1;
+let currentURL=null;
+
+let shuffle=false;
+let repeat=false;
+let favoritesOnly=false;
+
+let audio=new Audio();
+
+const fileInput=document.getElementById("fileInput");
+const songList=document.getElementById("songs");
+const searchInput=document.getElementById("search");
+
+const now=document.getElementById("now");
+const statusText=document.getElementById("status");
+
+const mainPlay=document.getElementById("mainPlay");
+const progress=document.getElementById("progress");
+
+const currentTime=document.getElementById("currentTime");
+const duration=document.getElementById("duration");
+
+const volume=document.getElementById("volume");
+
+const favoriteMain=
+document.getElementById("favoriteMain");
+
+const toast=
+document.getElementById("toast");
+
+let db;
+
+
+/* =========================
+   DATABASE
+========================= */
+
+const request=
+indexedDB.open("FreeMusicDB",1);
+
+request.onupgradeneeded=function(event){
+
+  db=event.target.result;
+
+  if(!db.objectStoreNames.contains("songs")){
+
+    db.createObjectStore(
+      "songs",
+      {
+        keyPath:"id",
+        autoIncrement:true
+      }
+    );
+
+  }
+
+};
+
+request.onsuccess=function(event){
+
+  db=event.target.result;
+
+  loadSongs();
+
+};
+
+request.onerror=function(){
+
+  alert("Storage error!");
+
+};
+
+
+/* =========================
+   ADD MUSIC
+========================= */
+
+fileInput.addEventListener(
+"change",
+function(){
+
+  const files=Array.from(this.files);
+
+  if(files.length===0)return;
+
+  files.forEach(file=>{
+    saveSong(file);
+  });
+
+  this.value="";
+
+});
+
+
+function saveSong(file){
+
+  const transaction=
+  db.transaction(["songs"],"readwrite");
+
+  const store=
+  transaction.objectStore("songs");
+
+  store.add({
+
+    name:file.name,
+
+    type:file.type,
+
+    data:file,
+
+    favorite:false
+
+  });
+
+  transaction.oncomplete=function(){
+
+    loadSongs();
+
+    showToast("Music added 🎵");
+
+  };
+
+}
+
+
+/* =========================
+   LOAD SONGS
+========================= */
+
+function loadSongs(){
+
+  if(!db)return;
+
+  const transaction=
+  db.transaction(["songs"],"readonly");
+
+  const store=
+  transaction.objectStore("songs");
+
+  const req=store.getAll();
+
+  req.onsuccess=function(){
+
+    songs=req.result;
+
+    showSongs();
+
+  };
+
+}
+
+
+/* =========================
+   SHOW SONGS
+========================= */
+
+function showSongs(){
+
+  songList.innerHTML="";
+
+  let visible=songs.filter(song=>{
+
+    const search=
+    searchInput.value.toLowerCase();
+
+    const matchesSearch=
+    song.name.toLowerCase().includes(search);
+
+    const matchesFav=
+    !favoritesOnly || song.favorite===true;
+
+    return matchesSearch && matchesFav;
+
+  });
+
+
+  if(visible.length===0){
+
+    songList.innerHTML=
+    `<div class="empty">
+      ${favoritesOnly
+      ?"No favorite songs ❤️"
+      :"No music found 🎵"}
+    </div>`;
+
+    return;
+
+  }
+
+
+  visible.forEach(song=>{
+
+    const index=
+    songs.findIndex(x=>x.id===song.id);
+
+    const div=
+    document.createElement("div");
+
+    div.className="song";
+
+    if(index===current)
+      div.classList.add("playing");
+
+    div.dataset.name=
+    song.name.toLowerCase();
+
+
+    div.innerHTML=`
+
+      <div class="cover">🎵</div>
+
+      <div class="info">
+        <b></b>
+        <small>
+          ${index===current
+          ?"NOW PLAYING"
+          :"My Music"}
+        </small>
+      </div>
+
+      <button class="fav">
+        ${song.favorite?"♥":"♡"}
+      </button>
+
+      <button class="delete">
+        🗑️
+      </button>
+
+      <button class="play">
+        ${index===current && !audio.paused
+        ?"⏸"
+        :"▶"}
+      </button>
+
+    `;
+
+
+    div.querySelector("b")
+    .textContent=song.name;
+
+
+    div.querySelector(".play")
+    .onclick=function(){
+
+      if(index===current && !audio.paused){
+
+        audio.pause();
+
+      }else{
+
+        playSong(index);
+
+      }
+
+    };
+
+
+    div.querySelector(".fav")
+    .onclick=function(){
+
+      toggleSongFavorite(index);
+
+    };
+
+
+    div.querySelector(".delete")
+    .onclick=function(){
+
+      deleteSong(index);
+
+    };
+
+
+    songList.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================
+   PLAY SONG
+========================= */
+
+function playSong(index){
+
+  if(!songs[index])return;
+
+  current=index;
+
+  const song=songs[index];
+
+  const blob=
+  new Blob(
+    [song.data],
+    {type:song.type}
+  );
+
+
+  if(currentURL){
+
+    URL.revokeObjectURL(currentURL);
+
+  }
+
+
+  currentURL=
+  URL.createObjectURL(blob);
+
+  audio.src=currentURL;
+
+  audio.play();
+
+  now.textContent=song.name;
+
+  statusText.textContent="Playing now 🎵";
+
+  mainPlay.textContent="⏸";
+
+  progress.value=0;
+
+  currentTime.textContent="0:00";
+
+  duration.textContent="0:00";
+
+  updateFavoriteButton();
+
+  showSongs();
+
+}
+
+
+/* =========================
+   PLAY / PAUSE
+========================= */
+
+function togglePlay(){
+
+  if(current===-1){
+
+    if(songs.length>0)
+      playSong(0);
+
+    return;
+
+  }
+
+
+  if(audio.paused){
+
+    audio.play();
+
+    mainPlay.textContent="⏸";
+
+    statusText.textContent="Playing now 🎵";
+
+  }else{
+
+    audio.pause();
+
+    mainPlay.textContent="▶";
+
+    statusText.textContent="Paused";
+
+  }
+
+  showSongs();
+
+}
+
+
+/* =========================
+   NEXT
+========================= */
+
+function next(){
+
+  if(songs.length===0)return;
+
+
+  if(shuffle){
+
+    let newIndex;
+
+    do{
+
+      newIndex=
+      Math.floor(
+        Math.random()*songs.length
+      );
+
+    }while(
+      songs.length>1 &&
+      newIndex===current
+    );
+
+    playSong(newIndex);
+
+    return;
+
+  }
+
+
+  current++;
+
+  if(current>=songs.length)
+    current=0;
+
+  playSong(current);
+
+}
+
+
+/* =========================
+   PREVIOUS
+========================= */
+
+function previous(){
+
+  if(songs.length===0)return;
+
+  current--;
+
+  if(current<0)
+    current=songs.length-1;
+
+  playSong(current);
+
+}
+
+
+/* =========================
+   AUDIO ENDED
+========================= */
+
+audio.onended=function(){
+
+  if(repeat){
+
+    audio.currentTime=0;
+
+    audio.play();
+
+    return;
+
+  }
+
+  next();
+
+};
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+audio.addEventListener(
+"timeupdate",
+function(){
+
+  if(!audio.duration)return;
+
+  progress.value=
+  (audio.currentTime/
+  audio.duration)*100;
+
+  currentTime.textContent=
+  formatTime(audio.currentTime);
+
+  duration.textContent=
+  formatTime(audio.duration);
+
+});
+
+
+progress.addEventListener(
+"input",
+function(){
+
+  if(!audio.duration)return;
+
+  audio.currentTime=
+  (progress.value/100)*
+  audio.duration;
+
+});
+
+
+function formatTime(seconds){
+
+  if(isNaN(seconds))
+    return "0:00";
+
+  const min=
+  Math.floor(seconds/60);
+
+  const sec=
+  Math.floor(seconds%60)
+  .toString()
+  .padStart(2,"0");
+
+  return min+":"+sec;
+
+}
+
+
+/* =========================
+   VOLUME
+========================= */
+
+volume.addEventListener(
+"input",
+function(){
+
+  audio.volume=this.value;
+
+});
+
+
+/* =========================
+   FAVORITES
+========================= */
+
+function toggleSongFavorite(index){
+
+  if(!songs[index])return;
+
+  songs[index].favorite=
+  !songs[index].favorite;
+
+  saveSongChange(songs[index]);
+
+}
+
+
+function toggleFavorite(){
+
+  if(current===-1)return;
+
+  toggleSongFavorite(current);
+
+}
+
+
+function saveSongChange(song){
+
+  const transaction=
+  db.transaction(["songs"],"readwrite");
+
+  const store=
+  transaction.objectStore("songs");
+
+  store.put(song);
+
+  transaction.oncomplete=function(){
+
+    showSongs();
+
+    updateFavoriteButton();
+
+  };
+
+}
+
+
+function updateFavoriteButton(){
+
+  if(
+    current!==-1 &&
+    songs[current] &&
+    songs[current].favorite
+  ){
+
+    favoriteMain.textContent="♥";
+
+    favoriteMain.classList.add("active");
+
+  }else{
+
+    favoriteMain.textContent="♡";
+
+    favoriteMain.classList.remove("active");
+
+  }
+
+}
+
+
+/* =========================
+   DELETE SONG
+========================= */
+
+function deleteSong(index){
+
+  if(!songs[index])return;
+
+  const song=songs[index];
+
+  const ok=
+  confirm(
+    "Delete this song?\n\n"+
+    song.name
+  );
+
+  if(!ok)return;
+
+
+  if(index===current){
+
+    audio.pause();
+
+    audio.src="";
+
+    current=-1;
+
+    now.textContent=
+    "No song selected";
+
+    statusText.textContent=
+    "FREE MUSIC";
+
+    mainPlay.textContent="▶";
+
+    progress.value=0;
+
+    currentTime.textContent="0:00";
+
+    duration.textContent="0:00";
+
+    updateFavoriteButton();
+
+  }
+
+
+  const transaction=
+  db.transaction(["songs"],"readwrite");
+
+  const store=
+  transaction.objectStore("songs");
+
+  store.delete(song.id);
+
+  transaction.oncomplete=function(){
+
+    loadSongs();
+
+    showToast("Song deleted 🗑️");
+
+  };
+
+}
+
+
+/* =========================
+   SHUFFLE
+========================= */
+
+function toggleShuffle(){
+
+  shuffle=!shuffle;
+
+  document
+  .getElementById("shuffleBtn")
+  .classList.toggle(
+    "active",
+    shuffle
+  );
+
+  showToast(
+    shuffle
+    ?"Shuffle ON 🔀"
+    :"Shuffle OFF"
+  );
+
+}
+
+
+/* =========================
+   REPEAT
+========================= */
+
+function toggleRepeat(){
+
+  repeat=!repeat;
+
+  document
+  .getElementById("repeatBtn")
+  .classList.toggle(
+    "active",
+    repeat
+  );
+
+  showToast(
+    repeat
+    ?"Repeat ON 🔁"
+    :"Repeat OFF"
+  );
+
+}
+
+
+/* =========================
+   TABS
+========================= */
+
+function showAll(){
+
+  favoritesOnly=false;
+
+  document
+  .getElementById("allBtn")
+  .classList.add("active");
+
+  document
+  .getElementById("favBtn")
+  .classList.remove("active");
+
+  showSongs();
+
+}
+
+
+function showFavorites(){
+
+  favoritesOnly=true;
+
+  document
+  .getElementById("favBtn")
+  .classList.add("active");
+
+  document
+  .getElementById("allBtn")
+  .classList.remove("active");
+
+  showSongs();
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+searchInput.addEventListener(
+"input",
+function(){
+
+  showSongs();
+
+});
+
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message){
+
+  toast.textContent=message;
+
+  toast.style.display="block";
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer=
+  setTimeout(
+    function(){
+
+      toast.style.display="none";
+
+    },
+    1800
+  );
+
+}
+
+
+/* =========================
+   CLEAN UP
+========================= */
+
+window.addEventListener(
+"beforeunload",
+function(){
+
+  if(currentURL){
+
+    URL.revokeObjectURL(currentURL);
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
