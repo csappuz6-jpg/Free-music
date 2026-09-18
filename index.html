@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Music</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0b0f;
+  color: white;
+}
+
+header {
+  padding: 22px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+header span {
+  color: #00e5ff;
+}
+
+.search {
+  margin: 0 18px 18px;
+}
+
+.search input {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 25px;
+  background: #1b1b23;
+  color: white;
+  outline: none;
+  font-size: 16px;
+}
+
+.song {
+  margin: 10px 18px;
+  padding: 15px;
+  background: #17171e;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cover {
+  width: 55px;
+  height: 55px;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#00e5ff,#7c4dff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.song-info {
+  flex: 1;
+}
+
+.song-info b {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.song-info small {
+  color: #999;
+}
+
+.play {
+  background: #00e5ff;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 18px;
+}
+
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18px;
+  background: #15151c;
+  border-top: 1px solid #292933;
+  text-align: center;
+}
+
+.now {
+  margin-bottom: 12px;
+  color: #00e5ff;
+}
+
+.controls button {
+  margin: 0 8px;
+  border: none;
+  background: #292933;
+  color: white;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 18px;
+}
+
+#mainPlay {
+  background: #00e5ff;
+  color: black;
+}
+</style>
+</head>
+
+<body>
+
+<header>FREE <span>MUSIC</span> 🎵</header>
+
+<div class="search">
+  <input type="text" id="search" placeholder="Search music...">
+</div>
+
+<div id="songs">
+
+  <div class="song" data-name="My Song">
+    <div class="cover">🎵</div>
+    <div class="song-info">
+      <b>My Song</b>
+      <small>Your Music</small>
+    </div>
+    <button class="play" onclick="playSong(0)">▶</button>
+  </div>
+
+  <div class="song" data-name="Music One">
+    <div class="cover">🎧</div>
+    <div class="song-info">
+      <b>Music One</b>
+      <small>Free Music</small>
+    </div>
+    <button class="play" onclick="playSong(1)">▶</button>
+  </div>
+
+  <div class="song" data-name="Music Two">
+    <div class="cover">🎶</div>
+    <div class="song-info">
+      <b>Music Two</b>
+      <small>Free Music</small>
+    </div>
+    <button class="play" onclick="playSong(2)">▶</button>
+  </div>
+
+</div>
+
+<div class="player">
+  <div class="now" id="now">No song selected</div>
+
+  <div class="controls">
+    <button onclick="previous()">⏮</button>
+    <button id="mainPlay" onclick="togglePlay()">▶</button>
+    <button onclick="next()">⏭</button>
+  </div>
+</div>
+
+<script>
+
+let songs = [
+  "music1.mp3",
+  "music2.mp3",
+  "music3.mp3"
+];
+
+let current = 0;
+let audio = new Audio();
+
+function playSong(index) {
+  current = index;
+  audio.src = songs[current];
+  audio.play();
+
+  document.getElementById("now").innerText =
+    "Playing: " + document.querySelectorAll(".song")[current]
+    .querySelector("b").innerText;
+
+  document.getElementById("mainPlay").innerText = "⏸";
+}
+
+function togglePlay() {
+  if (!audio.src) {
+    playSong(0);
+    return;
+  }
+
+  if (audio.paused) {
+    audio.play();
+    document.getElementById("mainPlay").innerText = "⏸";
+  } else {
+    audio.pause();
+    document.getElementById("mainPlay").innerText = "▶";
+  }
+}
+
+function next() {
+  current++;
+
+  if (current >= songs.length) {
+    current = 0;
+  }
+
+  playSong(current);
+}
+
+function previous() {
+  current--;
+
+  if (current < 0) {
+    current = songs.length - 1;
+  }
+
+  playSong(current);
+}
+
+audio.onended = function() {
+  next();
+};
+
+document.getElementById("search").addEventListener("input", function() {
+
+  let value = this.value.toLowerCase();
+  let list = document.querySelectorAll(".song");
+
+  list.forEach(function(song) {
+
+    let name = song.dataset.name.toLowerCase();
+
+    if (name.includes(value)) {
+      song.style.display = "flex";
+    } else {
+      song.style.display = "none";
+    }
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>
