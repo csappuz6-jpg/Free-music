@@ -1,12 +1,18 @@
-<! html>
+<!DOCTYPE html>
 <html lang="en">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <head>
+  <script>
+const SUPABASE_URL = "https://mnyiakfjubcygtnusqbm.supabase.co";
+const SUPABASE_KEY = "sb_publishable_b15jHAc-pRlpNZ9-iP_2Wg_mgianL1i";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#00e5ff">
 
-<title>Rud7a Music</title>
-  
+<title>FREE MUSIC</title>
+
 <style>
 *{box-sizing:border-box}
 
@@ -933,8 +939,7 @@ function toggleFavorite(){
 
 }
 
-
-function saveSongChange(song){
+  function saveSong(file)
 
   const transaction=
   db.transaction(["songs"],"readwrite");
